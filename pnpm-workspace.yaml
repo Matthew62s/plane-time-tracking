@@ -197,6 +197,7 @@ catalog:
   "y-protocols": "^1.0.6"
   "yjs": "^13.6.20"
   "zod": "^3.25.76"
+  "jsdom": "30.1.1"
 
 overrides:
   mdast-util-to-hast: 13.2.1
