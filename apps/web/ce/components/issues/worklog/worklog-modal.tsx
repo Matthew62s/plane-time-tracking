@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { observer } from "mobx-react";
 import { Pencil, Trash2 } from "lucide-react";
 // plane imports
@@ -62,7 +62,14 @@ export const WorklogModal = observer(function WorklogModal(props: TWorklogModal)
   const { data: currentUser } = useUser();
   const { getUserDetails } = useMember();
   const { getProjectRoleByWorkspaceSlugAndProjectId } = useUserPermissions();
-  const { fetchActivities } = useIssueDetail();
+  const { fetchActivities, setWorklogModalOpen } = useIssueDetail();
+  const modalId = useId();
+
+  useEffect(() => {
+    if (!isOpen || !canViewWorklogs) return;
+    setWorklogModalOpen(modalId, true);
+    return () => setWorklogModalOpen(modalId, false);
+  }, [isOpen, canViewWorklogs, modalId, setWorklogModalOpen]);
   // derived values
   const { worklogs, totalDuration, isLoading, mutate } = useWorklogs(
     workspaceSlug,
