@@ -87,6 +87,7 @@ export interface IIssueDetail
   isRelationModalOpen: TIssueRelationModal | null;
   isSubIssuesModalOpen: string | null;
   attachmentDeleteModalId: string | null;
+  openWorklogModalIds: string[];
   // computed
   isAnyModalOpen: boolean;
   isPeekOpen: boolean;
@@ -103,6 +104,7 @@ export interface IIssueDetail
   toggleRelationModal: (issueId: string | null, relationType: TIssueRelationTypes | null) => void;
   toggleSubIssuesModal: (value: string | null) => void;
   toggleDeleteAttachmentModal: (attachmentId: string | null) => void;
+  setWorklogModalOpen: (modalId: string, isOpen: boolean) => void;
   setOpenWidgets: (state: TWorkItemWidgets[]) => void;
   setLastWidgetAction: (action: TWorkItemWidgets) => void;
   toggleOpenWidget: (state: TWorkItemWidgets) => void;
@@ -149,6 +151,7 @@ export class IssueDetail implements IIssueDetail {
   isRelationModalOpen: TIssueRelationModal | null = null;
   isSubIssuesModalOpen: string | null = null;
   attachmentDeleteModalId: string | null = null;
+  openWorklogModalIds: string[] = [];
   // service type
   serviceType: TIssueServiceType;
   // store
@@ -179,6 +182,7 @@ export class IssueDetail implements IIssueDetail {
       isRelationModalOpen: observable.ref,
       isSubIssuesModalOpen: observable.ref,
       attachmentDeleteModalId: observable.ref,
+      openWorklogModalIds: observable.ref,
       openWidgets: observable.ref,
       lastWidgetAction: observable.ref,
       // computed
@@ -195,6 +199,7 @@ export class IssueDetail implements IIssueDetail {
       toggleRelationModal: action,
       toggleSubIssuesModal: action,
       toggleDeleteAttachmentModal: action,
+      setWorklogModalOpen: action,
       setOpenWidgets: action,
       setLastWidgetAction: action,
       toggleOpenWidget: action,
@@ -227,7 +232,8 @@ export class IssueDetail implements IIssueDetail {
       !!this.isArchiveIssueModalOpen ||
       !!this.isRelationModalOpen?.issueId ||
       !!this.isSubIssuesModalOpen ||
-      !!this.attachmentDeleteModalId
+      !!this.attachmentDeleteModalId ||
+      this.openWorklogModalIds.length > 0
     );
   }
 
@@ -251,6 +257,11 @@ export class IssueDetail implements IIssueDetail {
     (this.isRelationModalOpen = { issueId, relationType });
   toggleSubIssuesModal = (issueId: string | null) => (this.isSubIssuesModalOpen = issueId);
   toggleDeleteAttachmentModal = (attachmentId: string | null) => (this.attachmentDeleteModalId = attachmentId);
+  setWorklogModalOpen = (modalId: string, isOpen: boolean) => {
+    // Each mounted worklog dialog owns its registration, including during cleanup.
+    const otherModalIds = this.openWorklogModalIds.filter((id) => id !== modalId);
+    this.openWorklogModalIds = isOpen ? [...otherModalIds, modalId] : otherModalIds;
+  };
   setOpenWidgets = (state: TWorkItemWidgets[]) => {
     this.openWidgets = state;
     if (this.lastWidgetAction) this.lastWidgetAction = null;
