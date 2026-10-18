@@ -35,7 +35,7 @@ function AnalyticsPage({ params }: Route.ComponentProps) {
 
   // store hooks
   const { toggleCreateProjectModal } = useCommandPalette();
-  const { workspaceProjectIds, loader } = useProject();
+  const { workspaceProjectIds, totalProjectIds, loader } = useProject();
   const { currentWorkspace } = useWorkspace();
   const { allowPermissions } = useUserPermissions();
 
@@ -71,7 +71,7 @@ function AnalyticsPage({ params }: Route.ComponentProps) {
       <PageHead title={pageTitle} />
       {workspaceProjectIds && (
         <>
-          {workspaceProjectIds.length > 0 || loader === "init-loader" ? (
+          {(totalProjectIds?.length ?? 0) > 0 || selectedTab === "time-tracking" || loader === "init-loader" ? (
             <div className="flex h-full overflow-hidden">
               <Tabs value={selectedTab} onValueChange={handleTabChange} className="h-full w-full">
                 <div className={"flex h-full w-full flex-col"}>
@@ -99,9 +99,7 @@ function AnalyticsPage({ params }: Route.ComponentProps) {
                       ))}
                     </Tabs.List>
 
-                    <div className="flex-shrink-0">
-                      <AnalyticsFilterActions />
-                    </div>
+                    <div className="flex-shrink-0">{selectedTab !== "time-tracking" && <AnalyticsFilterActions />}</div>
                   </div>
                   {ANALYTICS_TABS.map((tab) => (
                     <Tabs.Content

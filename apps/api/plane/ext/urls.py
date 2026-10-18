@@ -85,11 +85,14 @@ from plane.ext.views.workshop_template import (
     WorkshopRoleListEndpoint,
 )
 
+from plane.ext.views.worklog_report import WorklogReportEndpoint
+
 PROJECT_BASE = "workspaces/<str:slug>/projects/<uuid:project_id>"
 
 EPIC_BASE = "workspaces/<str:slug>/projects/<uuid:project_id>/epics"
 
 urlpatterns = [
+    path("workspaces/<str:slug>/worklog-report/", WorklogReportEndpoint.as_view(), name="worklog-report"),
     path(
         "workspaces/<str:slug>/capacity/training-imports/",
         TrainingImportEndpoint.as_view(),
