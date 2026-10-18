@@ -131,6 +131,8 @@ temp/
 !scripts/community-modal.test.mjs
 !scripts/generate-release-notes.mjs
 !scripts/vr.mjs
+!scripts/hangar-update.py
+!scripts/tests/
 !packages/i18n/scripts/
 !.github/scripts/
 !.github/scripts/release_metadata.py
